@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema gestor de servicios</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="topbar">
+        <div>
+            <h1>Sistema de Gestión de Servicios</h1>
+            
+        </div>
+        <div id="badge-conexion" class="badge badge-offline">Verificando conexión...</div>
+    </header>
+
+    <main class="container">
+        <!-- Panel de Prueba de Conexión -->
+        <section class="card status-panel">
+            <div>
+                <strong>Estado de Conexión a Base de Datos:</strong>
+                <span id="info-conexion">Consultando PostgreSQL...</span>
+            </div>
+            <button class="btn btn-secondary" onclick="verificarConexion()">Probar Conexión</button>
+        </section>
+
+        <!-- Navegación por Módulos -->
+        <nav class="tabs">
+            <button class="tab-btn active" onclick="cambiarTab('clientes', this)">1. Gestión de Clientes </button>
+            <button class="tab-btn" onclick="cambiarTab('reportes', this)">2. Reportes y Consultas </button>
+        </nav>
+
+        <!-- MÓDULO 1: CRUD DE CLIENTES -->
+        <section id="sec-clientes" class="tab-content active">
+            <div class="grid-2">
+                <div class="card">
+                    <h2 id="form-titulo">Registrar Nuevo Cliente</h2>
+                    <form id="form-cliente">
+                        <input type="hidden" id="cli-id">
+                        <label>DNI (8 dígitos) o RUC (11 dígitos) *</label>
+                        <input type="text" id="cli-dni" maxlength="11" required placeholder="Ej. 72456321">
+
+                        <label>Nombre o Razón Social *</label>
+                        <input type="text" id="cli-nombre" maxlength="100" required>
+
+                        <label>Teléfono (9 dígitos) *</label>
+                        <input type="text" id="cli-telefono" maxlength="9" required placeholder="987654321">
+
+                        <label>Dirección de Instalación *</label>
+                        <input type="text" id="cli-direccion" maxlength="100" required>
+
+                        <label>Correo Electrónico</label>
+                        <input type="email" id="cli-email" maxlength="80">
+
+                        <label>Referencia</label>
+                        <input type="text" id="cli-referencia" maxlength="100">
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary" id="btn-guardar">Guardar Cliente</button>
+                            <button type="button" class="btn btn-secondary" id="btn-cancelar" style="display:none;" onclick="resetearFormulario()">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <div class="header-tabla">
+                        <h2>Clientes Activos</h2>
+                        <input type="text" id="buscador-cliente" placeholder="Buscar por DNI/RUC o Nombre..." onkeyup="cargarClientes()">
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>DNI/RUC</th>
+                                    <th>Nombre / Razón Social</th>
+                                    <th>Teléfono</th>
+                                    <th>Dirección</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-clientes"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MÓDULO 2: 10 REPORTES ALMACENADOS -->
+        <section id="sec-reportes" class="tab-content">
+            <div class="card">
+                <h2>Reportes Ejecutivos (Procedimientos Almacenados en PostgreSQL)</h2>
+                <div class="report-controls">
+                    <select id="select-reporte">
+                        <option value="1">Reporte 1 (JOIN): Liquidación Financiera de Cotizaciones (Total, Adelanto 50%, Saldo)</option>
+                        <option value="2">Reporte 2 (JOIN): Orden de Compra a Proveedores (Servicios Programados)</option>
+                        <option value="3">Reporte 3 (JOIN): Seguimiento de Cotizaciones Pendientes y Antigüedad</option>
+                        <option value="4">Reporte 4 (JOIN): Hoja de Ruta de Servicios para Técnicos</option>
+                        <option value="5">Reporte 5 (JOIN): Catálogo de Productos por Proveedor</option>
+                        <option value="6">Reporte 6 (JOIN): Productividad y Carga de Trabajo por Técnico</option>
+                        <option value="7">Reporte 7 (JOIN): Desglose de Equipos por Cotización</option>
+                        <option value="8">Reporte 8: Padrón de Clientes Activos</option>
+                        <option value="9">Reporte 9: Alerta de Productos con Stock Crítico (&lt;= 6)</option>
+                        <option value="10">Reporte 10: Bitácora de Auditoría (Eventos capturados por Triggers)</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="ejecutarReporte()">Ejecutar Reporte</button>
+                </div>
+                <div class="table-wrapper">
+                    <table id="tabla-reporte">
+                        <thead id="thead-reporte"></thead>
+                        <tbody id="tbody-reporte"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="toast" class="toast"></div>
+    <script src="app.js"></script>
+</body>
+</html>
